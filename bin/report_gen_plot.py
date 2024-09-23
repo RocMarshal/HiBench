@@ -39,7 +39,7 @@ def group_by_type(datas):
 
 def report_plot(fn):
     if not os.path.isfile(fn):
-        print "Failed to find `sparkbench.report`"
+        print("Failed to find `sparkbench.report`")
         sys.exit(1)
 
     with open(fn) as f:
@@ -53,7 +53,7 @@ def report_plot(fn):
                                       throughput_per_node = int(x[6]) / 1024.0 /1024
                                       ) for x in data])
 
-    #print groups
+    #print(groups)
     base_dir = os.path.dirname(fn)
     plot(groups, "Seconds of durtations (Less is better)", "Seconds", "durtation", os.path.join(base_dir, "durtation.png"))
 #    plot(groups, "Throughput in total (Higher is better)", "MB/s", "throughput_total", os.path.join(base_dir, "throughput_total.png"))

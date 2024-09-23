@@ -15,6 +15,7 @@
 # limitations under the License.
 
 import threading, subprocess, re, os, sys, signal, socket
+from functools import reduce
 from time import sleep, time
 from contextlib import closing
 import traceback, thread
@@ -101,7 +102,7 @@ try:
  while True:
   log("accepting")
   try:
-   print s.getsockname()[1]
+   print(s.getsockname()[1])
    s2,peer=s.accept()
    break
   except socket.timeout:
@@ -122,7 +123,7 @@ import time, os, sys, socket, traceback
 s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind(("0.0.0.0",0))
 s.listen(5)
-print s.getsockname()[1]
+print(s.getsockname()[1])
 s2,peer=s.accept()
 {func_template}
 while True:
@@ -418,7 +419,7 @@ class NodeAggregator(object):
     def commit_aggregate(self, node, datas):
         datas['hostname'] = node
         with self.log_lock:
-            with file(self.log_name, "a") as f:
+            with open(self.log_name, "a") as f:
                 f.write(repr(datas) + "\n")
 
     def run(self):
@@ -477,15 +478,15 @@ def test():
     script=r"""exec('
 import time, os, sys
 while 1:
-  with open("/proc/stat") as f: print f.read(),
-  print "---hello---"
+  with open("/proc/stat") as f: print(f.read()),
+  print("---hello---")
   time.sleep(1)
 ')"""
     s = script.replace('"', r'\"').replace("\n", r"\n")
     with p.ssh_client("localhost", "python -u -c \"{s}\"".format(s=s)) as f:
         while 1:
             l = f.readline()
-            print l.rstrip()
+            print(l.rstrip())
             if not l: break
     p.ssh_close()
 
@@ -638,8 +639,8 @@ def generate_report(workload_title, log_fn, benchlog_fn, report_fn):
                 cpu = x.get('cpu/total', None)
                 if not cpu: continue
             # user, system, io, idle, others
-#            print t, x['hostname'], cpu.user, cpu.system, cpu.iowait, cpu.idle, cpu.nice+cpu.irq+cpu.softirq
-#        print t, summed
+#            print(t, x['hostname'], cpu.user, cpu.system, cpu.iowait, cpu.idle, cpu.nice+cpu.irq+cpu.softirq)
+#        print(t, summed)
             cpu_overall.append("{time},{idle},{user},{system},{iowait},{others}" \
                                    .format(time   = int(t*1000), user = summed.user, system = summed.system, 
                                            iowait = summed.iowait, idle = summed.idle, 
@@ -653,7 +654,7 @@ def generate_report(workload_title, log_fn, benchlog_fn, report_fn):
                 except:
                     pos =  len(cpu_count)
                     cpu_count[(idx, idy, x['hostname'])] = pos
-#                print t, pos, 100-y.idle, x['hostname'], y.label
+#                print(t, pos, 100-y.idle, x['hostname'], y.label)
                 cpu_heatmap.append("{time},{pos},{value},{host},{cpuid}" \
                                        .format(time = int(t*1000), pos = pos, value = 100-y.idle,
                                                host = x['hostname'], cpuid = y.label))
@@ -760,7 +761,7 @@ def generate_report(workload_title, log_fn, benchlog_fn, report_fn):
                 if not net: continue
                 # recv-byte, send-byte, recv-packet, send-packet, errors
     #            print t, x['hostname'], net.recv_bytes, net.send_bytes, net.recv_packets, net.send_packets, net.recv_errs+net.send_errs+net.recv_drop+net.send_drop
-    #        print t, summed
+    #        print(t, summed)
             network_overall.append("{time},{recv_bytes},{send_bytes},{recv_packets},{send_packets},{errors}" \
                                        .format(time         = int(t*1000),
                                                recv_bytes   = summed.recv_bytes / PROBE_INTERVAL, 
@@ -838,7 +839,7 @@ if __name__=="__main__":
     nodes_to_monitor = sys.argv[6:]
     pid=os.fork()
     if pid:                               #parent
-        print pid
+        print(pid)
     else:                                 #child
         os.close(0)
         os.close(1)
