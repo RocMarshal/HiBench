@@ -34,6 +34,7 @@ Note: For CDH and HDP users, please update `hibench.hadoop.executable`, `hibench
 ### 3. Run a workload ###
 To run a single workload i.e. `wordcount`.
 
+     export INPUT_HDFS="${your_hdfs_input_data_path}"
      bin/workloads/micro/wordcount/prepare/prepare.sh
      bin/workloads/micro/wordcount/hadoop/run.sh
 
