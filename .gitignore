@@ -20,3 +20,4 @@ conf/hibench.conf
 conf/hadoop.conf
 conf/spark.conf
 *.conf
+*/**/dependency-reduced-pom.xml
