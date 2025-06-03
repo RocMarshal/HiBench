@@ -1,7 +1,7 @@
 import unittest
 import os
 import load_config
-import mock
+from unittest import mock
 import fnmatch
 import re
 import glob

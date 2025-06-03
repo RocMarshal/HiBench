@@ -2,6 +2,7 @@
 #coding: utf-8
 
 import sys, os, re
+from functools import reduce
 from pprint import pprint
 from collections import defaultdict, namedtuple
 import matplotlib
@@ -39,7 +40,7 @@ def group_by_type(datas):
 
 def report_plot(fn):
     if not os.path.isfile(fn):
-        print "Failed to find `sparkbench.report`"
+        print("Failed to find `sparkbench.report`")
         sys.exit(1)
 
     with open(fn) as f:

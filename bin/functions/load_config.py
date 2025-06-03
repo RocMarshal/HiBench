@@ -23,6 +23,8 @@ import socket
 
 from contextlib import closing
 from collections import defaultdict
+from os.path import join
+
 from hibench_prop_env_mapping import HiBenchEnvPropMappingMandatory, HiBenchEnvPropMapping
 
 HibenchConf = {}
@@ -221,7 +223,7 @@ def load_config(conf_root, workload_config_file, workload_folder, patching_confi
     check_config()
     #import pdb;pdb.set_trace()
     # Export config to file, let bash script to import as local variables.
-    print export_config(workload_name, framework_name)
+    print(export_config(workload_name, framework_name))
 
 
 def check_config():             # check configures

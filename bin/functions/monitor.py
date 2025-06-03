@@ -15,9 +15,10 @@
 # limitations under the License.
 
 import threading, subprocess, re, os, sys, signal, socket
+from functools import reduce
 from time import sleep, time
 from contextlib import closing
-import traceback, thread
+import traceback, _thread
 from datetime import datetime
 from collections import namedtuple
 from pprint import pprint
@@ -35,7 +36,7 @@ def log(*s):
     else: s= " ".join([str(x) for x in s])
 #    with log_lock:
 #        with open("/home/zhihui/monitor_proc.log", 'a') as f:
-    log_str = str(thread.get_ident())+":"+str(s) +'\n'
+    log_str = str(_thread.get_ident())+":"+str(s) +'\n'
     #        f.write( log_str )
     sys.stderr.write(log_str)
         
@@ -418,7 +419,7 @@ class NodeAggregator(object):
     def commit_aggregate(self, node, datas):
         datas['hostname'] = node
         with self.log_lock:
-            with file(self.log_name, "a") as f:
+            with open(self.log_name, "a") as f:
                 f.write(repr(datas) + "\n")
 
     def run(self):
@@ -485,7 +486,7 @@ while 1:
     with p.ssh_client("localhost", "python -u -c \"{s}\"".format(s=s)) as f:
         while 1:
             l = f.readline()
-            print l.rstrip()
+            print(l.rstrip())
             if not l: break
     p.ssh_close()
 
@@ -838,7 +839,7 @@ if __name__=="__main__":
     nodes_to_monitor = sys.argv[6:]
     pid=os.fork()
     if pid:                               #parent
-        print pid
+        print(pid)
     else:                                 #child
         os.close(0)
         os.close(1)
