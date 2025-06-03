@@ -18,5 +18,5 @@
 package com.intel.hibench.flinkbench.metrics;
 
 public class Metrics {
-    //TODO get the timestamp of original data and calculate the latency
+  // TODO get the timestamp of original data and calculate the latency
 }

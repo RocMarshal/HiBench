@@ -23,7 +23,8 @@ import java.util.Map;
 
 public class Utils {
 
-  public static Map<String, String> readAndParseConfig(FlinkBenchConfig config) throws IllegalAccessException {
+  public static Map<String, String> readAndParseConfig(FlinkBenchConfig config)
+      throws IllegalAccessException {
     Map<String, String> map = new HashMap<String, String>();
     Field[] fields = config.getClass().getFields();
     for (Field f : fields) {

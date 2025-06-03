@@ -41,7 +41,7 @@
     <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka_${scala.binary.version}</artifactId>
-      <version>0.8.2.1</version>
+      <version>3.9.1</version>
       <exclusions>
         <exclusion>
           <groupId>log4j</groupId>
@@ -101,14 +101,22 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>8</source>
+          <target>8</target>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <profiles>
     <profile>
       <id>defaultScalaVersion</id>
       <properties>
-        <scala.version>2.11.8</scala.version>
-        <scala.binary.version>2.11</scala.binary.version>
+        <scala.version>2.12.19</scala.version>
+        <scala.binary.version>2.12</scala.binary.version>
       </properties>
       <activation>
         <property>

@@ -17,20 +17,23 @@
 
 package com.intel.hibench.flinkbench.datasource;
 
-import com.intel.hibench.flinkbench.util.KeyedTupleSchema;
 import com.intel.hibench.flinkbench.util.FlinkBenchConfig;
-
-import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.streaming.api.functions.source.SourceFunction;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer08;
-
+import java.io.IOException;
 import java.util.Properties;
+import org.apache.flink.api.common.typeinfo.TypeInformation;
+import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.api.java.typeutils.TupleTypeInfo;
+import org.apache.flink.connector.kafka.source.KafkaSource;
+import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
+import org.apache.flink.connector.kafka.source.reader.deserializer.KafkaRecordDeserializationSchema;
+import org.apache.flink.util.Collector;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 public abstract class StreamBase {
 
-  private SourceFunction<Tuple2<String, String>> dataStream;
+  private KafkaSource<Tuple2<String, String>> dataStream;
 
-  public SourceFunction<Tuple2<String, String>> getDataStream() {
+  public KafkaSource<Tuple2<String, String>> getDataStream() {
     return this.dataStream;
   }
 
@@ -42,12 +45,28 @@ public abstract class StreamBase {
     properties.setProperty("bootstrap.servers", config.brokerList);
     properties.setProperty("auto.offset.reset", config.offsetReset);
 
-    this.dataStream = new FlinkKafkaConsumer08<Tuple2<String, String>>(
-        config.topic,
-        new KeyedTupleSchema(),
-        properties);
+    this.dataStream =
+        KafkaSource.<Tuple2<String, String>>builder()
+            .setDeserializer(
+                new KafkaRecordDeserializationSchema<Tuple2<String, String>>() {
+                  @Override
+                  public void deserialize(
+                      ConsumerRecord<byte[], byte[]> record, Collector<Tuple2<String, String>> out)
+                      throws IOException {
+                    out.collect(new Tuple2<>(new String(record.key()), new String(record.value())));
+                  }
+
+                  @Override
+                  public TypeInformation<Tuple2<String, String>> getProducedType() {
+                    return new TupleTypeInfo<>(
+                        TypeInformation.of(String.class), TypeInformation.of(String.class));
+                  }
+                })
+            .setStartingOffsets(OffsetsInitializer.earliest())
+            .setProperties(properties)
+            .setTopics(config.topic)
+            .build();
   }
 
-  public void processStream(FlinkBenchConfig config) throws Exception {
-  }
+  public void processStream(FlinkBenchConfig config) throws Exception {}
 }

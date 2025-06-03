@@ -17,13 +17,13 @@
 
 package com.intel.hibench.flinkbench;
 
+import com.intel.hibench.common.streaming.ConfigLoader;
+import com.intel.hibench.common.streaming.Platform;
+import com.intel.hibench.common.streaming.StreamBenchConfig;
+import com.intel.hibench.common.streaming.metrics.MetricsUtil;
 import com.intel.hibench.flinkbench.microbench.*;
 import com.intel.hibench.flinkbench.util.BenchLogUtil;
 import com.intel.hibench.flinkbench.util.FlinkBenchConfig;
-import com.intel.hibench.common.streaming.ConfigLoader;
-import com.intel.hibench.common.streaming.metrics.MetricsUtil;
-import com.intel.hibench.common.streaming.StreamBenchConfig;
-import com.intel.hibench.common.streaming.Platform;
 
 public class RunBench {
   public static void main(String[] args) throws Exception {
@@ -32,8 +32,7 @@ public class RunBench {
 
   public static void runAll(String[] args) throws Exception {
 
-    if (args.length < 1)
-      BenchLogUtil.handleError("Usage: RunBench <ConfigFile>");
+    if (args.length < 1) BenchLogUtil.handleError("Usage: RunBench <ConfigFile>");
 
     ConfigLoader cl = new ConfigLoader(args[0]);
 
@@ -49,12 +48,17 @@ public class RunBench {
     conf.windowDuration = cl.getProperty(StreamBenchConfig.FixWINDOW_DURATION);
     conf.windowSlideStep = cl.getProperty(StreamBenchConfig.FixWINDOW_SLIDESTEP);
 
-    conf.checkpointDuration = Long.parseLong(cl.getProperty(StreamBenchConfig.FLINK_CHECKPOINTDURATION));
+    conf.checkpointDuration =
+        Long.parseLong(cl.getProperty(StreamBenchConfig.FLINK_CHECKPOINTDURATION));
     int producerNum = Integer.parseInt(cl.getProperty(StreamBenchConfig.DATAGEN_PRODUCER_NUMBER));
-    long recordsPerInterval = Long.parseLong(cl.getProperty(StreamBenchConfig.DATAGEN_RECORDS_PRE_INTERVAL));
+    long recordsPerInterval =
+        Long.parseLong(cl.getProperty(StreamBenchConfig.DATAGEN_RECORDS_PRE_INTERVAL));
     int intervalSpan = Integer.parseInt(cl.getProperty(StreamBenchConfig.DATAGEN_INTERVAL_SPAN));
-    conf.reportTopic = MetricsUtil.getTopic(Platform.FLINK, conf.testCase, producerNum, recordsPerInterval, intervalSpan);
-    int reportTopicPartitions = Integer.parseInt(cl.getProperty(StreamBenchConfig.KAFKA_TOPIC_PARTITIONS));
+    conf.reportTopic =
+        MetricsUtil.getTopic(
+            Platform.FLINK, conf.testCase, producerNum, recordsPerInterval, intervalSpan);
+    int reportTopicPartitions =
+        Integer.parseInt(cl.getProperty(StreamBenchConfig.KAFKA_TOPIC_PARTITIONS));
     MetricsUtil.createTopic(conf.zkHost, conf.reportTopic, reportTopicPartitions);
 
     // Main testcase logic

@@ -16,7 +16,7 @@
   <name>flinkbench</name>
 
   <properties>
-    <flinkVersion>1.0.3</flinkVersion>
+    <flinkVersion>1.20.1</flinkVersion>
     <jackson.version>2.4.2</jackson.version>
   </properties>
 
@@ -43,8 +43,8 @@
     <profile>
       <id>defaultScalaVersion</id>
       <properties>
-        <scala.version>2.11.8</scala.version>
-        <scala.binary.version>2.11</scala.binary.version>
+        <scala.version>2.12.19</scala.version>
+        <scala.binary.version>2.12</scala.binary.version>
       </properties>
       <activation>
         <property>

@@ -31,6 +31,13 @@
   <packaging>jar</packaging>
   <name>flinkbench-streaming</name>
 
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <encoding>UTF-8</encoding>
+    <scala.version>2.12.18</scala.version>
+  </properties>
+
   <repositories>
     <repository>
       <id>apache.snapshots</id>
@@ -69,8 +76,8 @@
     </dependency>
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-connector-kafka-0.8_${scala.binary.version}</artifactId>
-      <version>${flinkVersion}</version>
+      <artifactId>flink-connector-kafka</artifactId>
+      <version>3.4.0-1.20</version>
       <scope>compile</scope>
       <exclusions>
         <exclusion>
@@ -85,9 +92,10 @@
     </dependency>
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
+      <artifactId>flink-streaming-java</artifactId>
       <version>${flinkVersion}</version>
-      <scope>compile</scope> <exclusions>
+      <scope>compile</scope>
+      <exclusions>
       <exclusion>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
@@ -102,6 +110,29 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>2.27.1</version>
+        <configuration>
+          <formats>
+            <format>
+              <includes>
+                <include>*.java</include>
+              </includes>
+              <trimTrailingWhitespace/>
+              <endWithNewline/>
+              <indent>
+                <spaces>true</spaces>
+                <spacesPerTab>4</spacesPerTab>
+              </indent>
+            </format>
+          </formats>
+          <java>
+            <googleJavaFormat/>
+          </java>
+        </configuration>
+      </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <version>${maven-assembly-plugin.version}</version>
